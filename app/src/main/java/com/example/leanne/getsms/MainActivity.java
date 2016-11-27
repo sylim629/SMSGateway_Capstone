@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.agree_button:
-                Intent enterNumber = new Intent(MainActivity.this, PairActivity.class);
+                Intent enterNumber = new Intent(MainActivity.this, EnterNumberActivity.class);
                 startActivity(enterNumber);
             case R.id.no_thanks_button:
                 this.finishAffinity();
