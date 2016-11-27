@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -22,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -67,9 +64,11 @@ public class GetSmsActivity extends AppCompatActivity implements View.OnClickLis
                 cursor.close();
                 parseSMS();
                 if (!smsParsedArrayList.isEmpty()) {
+                    Log.d("TAG", "SMS not empty, SUCCESS");
                     // Thread로 웹서버에 접속
                     new Thread() {
                         public void run() {
+                            Log.d("TAG", "Start Sending to Server");
                             sendToServer();
                         }
                     }.start();
@@ -169,8 +168,14 @@ public class GetSmsActivity extends AppCompatActivity implements View.OnClickLis
 
             OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
             writer.write("phone_number=" + devicePhoneNumber + "&sms_list=" + buffer.toString());
-
             writer.flush();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+            String line;
+            buffer = new StringBuffer();
+            while ((line = rd.readLine()) != null) {
+                buffer.append(line);
+            }
+            Log.d("TAG", String.valueOf(buffer));
             writer.close();
             connection.disconnect();
         } catch (IOException e) {
