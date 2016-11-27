@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".GetSmsActivity" />
         <activity android:name=".EnterNumberActivity" />
+        <activity android:name=".PairActivity" />
     </application>
 
 </manifest>
