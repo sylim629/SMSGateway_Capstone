@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         assert buttonAgree != null;
         buttonAgree.setOnClickListener(this);
         assert buttonNoThanks != null;
-
-        ///수정 테스트
         buttonNoThanks.setOnClickListener(this);
     }
 
