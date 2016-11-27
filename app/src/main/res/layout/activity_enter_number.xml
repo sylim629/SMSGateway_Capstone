@@ -4,23 +4,37 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter the number of the bank you recieve SMS from"
-        android:textSize="30sp" />
+        android:orientation="vertical"
+        android:padding="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3/3"
+            android:textSize="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter the number of the bank you recieve SMS from"
+            android:textSize="30sp"
+            android:layout_marginBottom="20dp"/>
 
-    <EditText
-        android:id="@+id/bank_number_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="enter here"
-        android:inputType="phone"
-        android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="save" />
+        <EditText
+            android:id="@+id/bank_number_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="enter here"
+            android:inputType="phone"
+            android:textSize="30sp"
+            android:layout_marginBottom="10dp"/>
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="save" />
+        </LinearLayout>
 </LinearLayout>
