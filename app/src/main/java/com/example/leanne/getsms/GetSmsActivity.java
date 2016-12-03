@@ -73,6 +73,7 @@ public class GetSmsActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     }.start();
                 }
+                Toast.makeText(this, "전송 완료", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -83,59 +84,54 @@ public class GetSmsActivity extends AppCompatActivity implements View.OnClickLis
         for (int i = 0; i < bankSMSArrayList.size(); i++) {
             // parse sms
             String[] splitSMS = bankSMSArrayList.get(i).split("\\s+");
+            String money = "";
+            String date = "";
 
-            // splitSMS의 2번째 항목이 임*연(3*7*)인지 확인
-            // 두 번째 글자가 "*"인지
-            if (Character.toString(splitSMS[1].charAt(1)).equals("*"))
-                Log.d("TAG - checking", "두 번째 글자 '*' 맞음");
-            else {
-                Log.d("SMS PARSE ERROR", "splitSMS[1].substring(1).equals(\"*\") 여기서 에러");
-                Toast.makeText(this, "Error! Check log", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // invert한 첫 두 글자가 ")*"인지
-            String invertString = new StringBuilder(splitSMS[1]).reverse().toString();
-            if (invertString.substring(0, 2).equals(")*"))
-                Log.d("TAG - checking", "임*연(3*7*) 확인 완료");
-            else {
-                Log.d("SMS PARSE ERROR", "invertsplitSMS.substring(0,1).equals(\")*\") 여기서 에러");
-                Toast.makeText(this, "Error! Check log", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            for(int j=0; j<splitSMS.length; j++) {
 
-            // spiltBody의 3번째 항목이 날짜인지 확인
-            // 3번째 글자가 "/"인지
-            if (Character.toString(splitSMS[2].charAt(2)).equals("/"))
-                Log.d("TAG - checking", "날짜 확인 완료");
-            else {
-                Log.d("SMS PARSE ERROR", "splitSMS[2].substring(2).equals(\"/\") 여기서 에러");
-                Toast.makeText(this, "Error! Check log", Toast.LENGTH_SHORT).show();
-                return;
-            }
+                // 날짜 찾기
+                if (Character.toString(splitSMS[j].charAt(2)).equals("/")) {    // 3번째 문자가 "/"인지 확인
+                    if (splitSMS[j].length() == 5) {                            // 길이가 5인지 확인
+                        Log.d("TAG - checking", "날짜 가져옴");
+                        date = splitSMS[j];                                     // 날짜 저장
+                        continue;
+                    }
+                }
 
-            // splitSMS의 5번째 항목이 금액인지 확인
-            // invert한 첫 글자가 "원"인지
-            invertString = new StringBuilder(splitSMS[4]).reverse().toString();
-            if (Character.toString(invertString.charAt(0)).equals("원"))
-                Log.d("TAG - checking", "금액 확인 완료");
-            else {
-                Log.d("SMS PARSE ERROR", "invertString.substring(0).equals(\"원\") 여기서 에러");
-                Toast.makeText(this, "Error! Check log", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // invert 한 5번째 글자가 ","인지
-            if (Character.toString(invertString.charAt(4)).equals(","))
-                Log.d("TAG - checking", "문자 파싱 the end");
-            else {
-                Log.d("SMS PARSE ERROR", "invertString.substring(4).equals(\",\") 여기서 에러");
-                Toast.makeText(this, "Error! Check log", Toast.LENGTH_SHORT).show();
-                return;
+                // 금액 찾기
+                String invertString = new StringBuilder(splitSMS[j]).reverse().toString();
+                if (Character.toString(invertString.charAt(0)).equals("원")) {           // 끝에"원" 있는지 확인
+
+                    // 앞에 "잔액" 혹은 "누적"이 있으면 건너뛰기
+                    if(splitSMS[j].substring(0,2).equals("누적") | splitSMS[j].substring(0,2).equals("잔액"))
+                        continue;
+
+                    // 금액이 천 단위 이상일 경우
+                    if(splitSMS[j].length()>=6) {
+                        if (Character.toString(invertString.charAt(4)).equals(",")) {     // 4번째 문자가 쉼표인지
+                            Log.d("TAG - checking", "문자 파싱 the end");
+                        }else{
+                            continue;
+                        }
+                    }
+
+                    // 앞에 "출금" 붙어있으면 떼기
+                    String test = splitSMS[j].substring(0,2);
+                    if(splitSMS[j].substring(0,2).equals("출금")) {
+                        splitSMS[j] = splitSMS[j].replace("출금", "");
+                    }
+                    Log.d("TAG - checking", "금액 확인 완료");
+                    money = splitSMS[j];                                    // 금액 저장
+                }
             }
 
-            String date = splitSMS[2];
-            String money = splitSMS[4];
+            // 금액 or 날짜 없으면 토스트 띄우기
+            if(date.equals("") | money.equals(""))
+                Toast.makeText(this, "ERROR : no money or date", Toast.LENGTH_SHORT).show();
+
             smsParsedArrayList.add(new SMSParsed(date, money));
             Log.d("TAG", "날짜 : " + date + ", 금액 : " + money);
+
         }
     }
 
